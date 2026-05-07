@@ -1,10 +1,12 @@
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "capstone_drug_sim.settings")
 
 from django.core.wsgi import get_wsgi_application
 
-app = get_wsgi_application()
+application = get_wsgi_application()
+app = application
