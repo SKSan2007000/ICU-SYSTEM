@@ -1,0 +1,43 @@
+{% extends 'monitor/base.html' %}
+{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <h1>Doctor Smartwatch Simulation</h1>
+        <p>Only critical patient alerts are sent to the doctor watch.</p>
+    </div>
+</header>
+
+<section class="watch-layout">
+    <div class="watch-device">
+        <div class="watch-top">
+            <span>Doctor Watch</span>
+            <span>Critical Only</span>
+        </div>
+
+        <div class="watch-screen">
+            {% for alert in alerts %}
+            <div class="watch-alert critical">
+                <span>P{{ alert.priority }}</span>
+                <h3>{{ alert.alert_type }}</h3>
+                <p>Bed {{ alert.patient.bed_no }}</p>
+                <small>{{ alert.message }}</small>
+                <a href="{% url 'clear_alert' alert.id %}">Review</a>
+            </div>
+            {% empty %}
+            <div class="watch-empty">No critical alerts</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel device-panel">
+        <h2>Doctor Watch Logic</h2>
+        <p>
+            Saline and normal patient queries are not sent to the doctor.
+            Only critical vitals such as SpO₂ drop, pulse abnormality,
+            and BP abnormality are routed here.
+        </p>
+    </div>
+</section>
+{% endblock %}

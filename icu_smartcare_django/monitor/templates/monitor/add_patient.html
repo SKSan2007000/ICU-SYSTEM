@@ -1,0 +1,35 @@
+{% extends 'monitor/base.html' %}
+
+{% block content %}
+<div class="form-wrap">
+    <div class="form-card">
+        <h1>Add ICU Patient</h1>
+        <p>Register patient details and ICU bed allocation.</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Patient Name</label>
+            <input type="text" name="patient_name" placeholder="Example: Ramesh Kumar" required>
+
+            <label>Bed Number</label>
+            <input type="text" name="bed_no" placeholder="Example: ICU-01" required>
+
+            <label>Age</label>
+            <input type="number" name="age" required>
+
+            <label>Risk Level</label>
+            <select name="risk_level">
+                <option>Normal</option>
+                <option>Moderate</option>
+                <option>High Risk</option>
+            </select>
+
+            <label>Diagnosis</label>
+            <textarea name="diagnosis" placeholder="Example: Lung infection / cardiac observation"></textarea>
+
+            <button class="btn primary full" type="submit">Save Patient</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

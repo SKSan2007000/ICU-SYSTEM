@@ -1,0 +1,44 @@
+{% extends 'monitor/base.html' %}
+
+{% block content %}
+<div class="form-wrap">
+    <div class="form-card wide">
+        <h1>Alert Clearance</h1>
+        <p>Record who attended, action taken, medication, and remarks.</p>
+
+        <div class="clear-summary">
+            <span class="priority">P{{ alert.priority }}</span>
+            <div>
+                <h3>{{ alert.alert_type }}</h3>
+                <p>Bed {{ alert.patient.bed_no }} • {{ alert.patient.patient_name }}</p>
+                <small>{{ alert.message }}</small>
+            </div>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Attended By</label>
+            <input type="text" name="attended_by" placeholder="Example: Nurse A / Dr. Kumar" required>
+
+            <label>Action Taken</label>
+            <select name="action_taken" required>
+                <option>Saline replaced</option>
+                <option>IV line checked</option>
+                <option>Patient attended</option>
+                <option>Medication given</option>
+                <option>Doctor informed</option>
+                <option>Escalated to emergency team</option>
+            </select>
+
+            <label>Medication Given</label>
+            <input type="text" name="medication_given" placeholder="Example: Paracetamol 500mg / Nil">
+
+            <label>Remarks</label>
+            <textarea name="remarks" placeholder="Example: Patient stable after attending."></textarea>
+
+            <button class="btn primary full" type="submit">Clear Alert & Save Log</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

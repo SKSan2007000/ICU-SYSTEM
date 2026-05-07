@@ -1,0 +1,32 @@
+{% extends 'monitor/base.html' %}
+{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <h1>Nurse Room Central Display</h1>
+        <p>Fail-safe backup board when watch is inactive, not worn, or alert is delayed.</p>
+    </div>
+</header>
+
+<div class="display-board">
+    {% for alert in alerts %}
+    <div class="display-alert {{ alert.severity|lower }}">
+        <div class="display-priority">P{{ alert.priority }}</div>
+        <div>
+            <h2>{{ alert.alert_type }}</h2>
+            <p>Bed {{ alert.patient.bed_no }} • {{ alert.patient.patient_name }}</p>
+            <strong>{{ alert.message }}</strong>
+            <div class="display-meta">
+                Assigned: {{ alert.assigned_to }} |
+                Escalation: Level {{ alert.escalation_level }} |
+                Time: {{ alert.generated_at|date:"H:i:s" }}
+            </div>
+        </div>
+        <a class="btn" href="{% url 'clear_alert' alert.id %}">Clear</a>
+    </div>
+    {% empty %}
+    <div class="empty large">No active alerts on nurse room display.</div>
+    {% endfor %}
+</div>
+{% endblock %}

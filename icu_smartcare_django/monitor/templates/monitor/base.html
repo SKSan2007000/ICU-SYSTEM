@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ICU SmartCare</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'monitor/css/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block refresh %}{% endblock %}
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="logo">+</div>
+            <div>
+                <h2>ICU SmartCare</h2>
+                <span>Priority Alert System</span>
+            </div>
+        </div>
+
+        <nav>
+            <a href="{% url 'dashboard' %}">ICU Dashboard</a>
+            <a href="{% url 'add_patient' %}">Add Patient</a>
+            <a href="{% url 'nurse_room' %}">Nurse Room Display</a>
+            <a href="{% url 'watch' %}">Nurse Watch</a>
+            <a href="{% url 'doctor_dashboard' %}">Doctor Dashboard</a>
+            <a href="{% url 'doctor_watch' %}">Doctor Watch</a>
+            <a href="{% url 'history' %}">Alert History</a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends 'monitor/base.html' %}
+{% block refresh %}<meta http-equiv="refresh" content="20">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <h1>Real-Time ICU Patient Monitoring</h1>
+        <p>Smart alert routing, nurse-room backup display, escalation, and response tracking.</p>
+    </div>
+    <div class="header-actions">
+        <a class="btn soft" href="{% url 'seed_demo' %}">Load Demo Patients</a>
+        <a class="btn primary" href="{% url 'add_patient' %}">+ Add Patient</a>
+    </div>
+</header>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span>Total Patients</span>
+        <h2>{{ patients|length }}</h2>
+    </div>
+    <div class="metric-card danger">
+        <span>Active Alerts</span>
+        <h2>{{ active_alerts|length }}</h2>
+    </div>
+    <div class="metric-card">
+        <span>Core Data Structure</span>
+        <h2>Priority Queue</h2>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-title">
+        <h2>Priority Alert Queue</h2>
+        <p>Lowest priority number is handled first.</p>
+    </div>
+
+    <div class="alert-stack">
+        {% for alert in active_alerts %}
+        <div class="alert-card {{ alert.severity|lower }}">
+            <div class="alert-left">
+                <span class="priority">P{{ alert.priority }}</span>
+                <div>
+                    <h3>{{ alert.alert_type }}</h3>
+                    <p>Bed {{ alert.patient.bed_no }} • {{ alert.patient.patient_name }}</p>
+                    <small>{{ alert.message }}</small>
+                    {% if alert.escalation_level > 0 %}
+                        <div class="escalation">Escalation Level {{ alert.escalation_level }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <a class="btn small" href="{% url 'clear_alert' alert.id %}">Attend / Clear</a>
+        </div>
+        {% empty %}
+        <div class="empty">No active alerts. ICU status normal.</div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-title">
+        <h2>ICU Beds</h2>
+        <p>Simulate vitals and generate demo alerts for presentation.</p>
+    </div>
+
+    <div class="patient-grid">
+        {% for patient in patients %}
+        <div class="patient-card">
+            <div class="bed-tag">{{ patient.bed_no }}</div>
+            <h3>{{ patient.patient_name }}</h3>
+            <p>Age {{ patient.age }} • {{ patient.risk_level }}</p>
+            <small>{{ patient.diagnosis }}</small>
+
+            <div class="patient-actions">
+                <a href="{% url 'simulate_vitals' patient.id %}">Simulate Vitals</a>
+                <a href="{% url 'manual_alert' patient.id 'saline' %}">Saline Low</a>
+                <a href="{% url 'manual_alert' patient.id 'spo2' %}">SpO₂ Critical</a>
+                <a href="{% url 'manual_alert' patient.id 'query' %}">Patient Query</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty">No patients added. Click “Load Demo Patients”.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

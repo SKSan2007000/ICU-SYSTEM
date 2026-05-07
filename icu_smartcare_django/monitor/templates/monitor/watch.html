@@ -1,0 +1,59 @@
+{% extends 'monitor/base.html' %}
+{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <h1>Nurse Smartwatch Simulation</h1>
+        <p>Routine alerts, saline alerts, and patient queries are routed to nurse watch.</p>
+    </div>
+</header>
+
+<section class="watch-layout">
+    <div class="watch-device">
+        <div class="watch-top">
+            <span>{{ device.nurse_name }}</span>
+            <span>{{ device.battery_level }}%</span>
+        </div>
+
+        {% if device.watch_status != 'Active' or device.battery_level < 20 %}
+        <div class="backup-warning">
+            Watch backup active: alerts also shown on nurse room display.
+        </div>
+        {% endif %}
+
+        <div class="watch-screen">
+            {% for alert in alerts %}
+            <div class="watch-alert {{ alert.severity|lower }}">
+                <span>P{{ alert.priority }}</span>
+                <h3>{{ alert.alert_type }}</h3>
+                <p>Bed {{ alert.patient.bed_no }}</p>
+                <small>{{ alert.message }}</small>
+                <a href="{% url 'clear_alert' alert.id %}">Attend</a>
+            </div>
+            {% empty %}
+            <div class="watch-empty">No nurse alerts</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel device-panel">
+        <h2>Watch Status Control</h2>
+        <p>Use this in demo to show fail-safe alert routing.</p>
+        <form method="POST">
+            {% csrf_token %}
+            <label>Watch Status</label>
+            <select name="watch_status">
+                <option {% if device.watch_status == 'Active' %}selected{% endif %}>Active</option>
+                <option {% if device.watch_status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                <option {% if device.watch_status == 'Not Worn' %}selected{% endif %}>Not Worn</option>
+            </select>
+
+            <label>Battery Level</label>
+            <input type="number" name="battery_level" min="0" max="100" value="{{ device.battery_level }}">
+
+            <button class="btn primary full" type="submit">Update Device Status</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'monitor/base.html' %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <h1>Alert History & Staff Performance</h1>
+        <p>Monthly filter, response analytics, and highest-points ranking for incentive evaluation.</p>
+    </div>
+</header>
+
+<section class="panel">
+    <form method="GET" style="display:flex; gap:15px; align-items:end; flex-wrap:wrap;">
+        <div>
+            <label>Select Month</label>
+            <input type="month" name="month" value="{{ selected_month }}">
+        </div>
+
+        <button class="btn primary" type="submit">Filter</button>
+        <a class="btn soft" href="{% url 'history' %}">Clear</a>
+    </form>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span>Cleared Alerts</span>
+        <h2>{{ cleared_alerts|length }}</h2>
+    </div>
+
+    <div class="metric-card">
+        <span>Average Response</span>
+        <h2>{% if avg_response %}{{ avg_response|floatformat:1 }} sec{% else %}0 sec{% endif %}</h2>
+    </div>
+
+    <div class="metric-card">
+        <span>Ranking</span>
+        <h2>Top Points</h2>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-title">
+        <h2>Monthly Staff Leaderboard</h2>
+        <p>Highest total points shown first.</p>
+    </div>
+
+    <div class="history-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Nurse / Doctor</th>
+                    <th>Total Points</th>
+                    <th>Average Response</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for staff in staff_leaderboard %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ staff.attended_by }}</td>
+                    <td>{{ staff.total_points }}</td>
+                    <td>{{ staff.avg_response|floatformat:1 }} sec</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No staff records found for this month.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-title">
+        <h2>Cleared Alert Records</h2>
+        <p>Individual records sorted by highest points first.</p>
+    </div>
+
+    <div class="history-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Bed</th>
+                    <th>Patient</th>
+                    <th>Alert</th>
+                    <th>Action</th>
+                    <th>Medication</th>
+                    <th>Response</th>
+                    <th>Cleared At</th>
+                    <th>Nurse / Doctor</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for alert in cleared_alerts %}
+                <tr>
+                    <td>{{ alert.patient.bed_no }}</td>
+                    <td>{{ alert.patient.patient_name }}</td>
+                    <td>{{ alert.alert_type }}</td>
+                    <td>{{ alert.action_taken }}</td>
+                    <td>{{ alert.medication_given }}</td>
+                    <td>{{ alert.response_seconds }} sec</td>
+                    <td>{{ alert.cleared_at|date:"d M Y, H:i:s" }}</td>
+                    <td>{{ alert.attended_by }}</td>
+                    <td>{{ alert.points_awarded }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No cleared alerts found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

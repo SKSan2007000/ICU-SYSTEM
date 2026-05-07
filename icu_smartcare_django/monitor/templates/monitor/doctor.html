@@ -1,0 +1,31 @@
+{% extends 'monitor/base.html' %}
+{% block refresh %}<meta http-equiv="refresh" content="10">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <div>
+        <h1>Doctor Critical Alert Dashboard</h1>
+        <p>Only high-severity vitals such as SpO₂ drop, pulse abnormality, and BP abnormality are shown here.</p>
+    </div>
+</header>
+
+<section class="panel">
+    <div class="alert-stack">
+        {% for alert in alerts %}
+        <div class="alert-card {{ alert.severity|lower }}">
+            <div class="alert-left">
+                <span class="priority">P{{ alert.priority }}</span>
+                <div>
+                    <h3>{{ alert.alert_type }}</h3>
+                    <p>Bed {{ alert.patient.bed_no }} • {{ alert.patient.patient_name }}</p>
+                    <small>{{ alert.message }}</small>
+                </div>
+            </div>
+            <a class="btn small" href="{% url 'clear_alert' alert.id %}">Review / Clear</a>
+        </div>
+        {% empty %}
+        <div class="empty">No critical doctor alerts.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
